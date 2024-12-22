@@ -2,9 +2,13 @@ package com.yourame;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
 
 public class PersonService {
 
@@ -42,7 +46,36 @@ public class PersonService {
     }
 
 
-    
+    public static Set<Person> removeBobWithoutIterator() {
+        Set<Person> people = new HashSet<>();
+        people.add(Person.builder().firstName("Alice").familyName("Johnson").build());
+        people.add(Person.builder().firstName("Bob").familyName("Martin").build());
+        people.add(Person.builder().firstName("Charlie").familyName("Davis").build());
+
+        for (Person person : people) {
+            if (person.getFamilyName().equals("Martin")) {
+                people.remove(person); // Erreur ici
+            }
+        }
+        return people;
+    }
+
+    public static Set<Person> removeBobUsingIterator() {
+        Set<Person> people = new HashSet<>();
+        people.add(Person.builder().firstName("Alice").familyName("Johnson").build());
+        people.add(Person.builder().firstName("Bob").familyName("Martin").build());
+        people.add(Person.builder().firstName("Charlie").familyName("Davis").build());
+
+        // Suppression avec iterator (sécurisé)
+        Iterator<Person> iterator = people.iterator();
+        while (iterator.hasNext()) {
+            Person person = iterator.next();
+            if (person.getFamilyName().equals("Martin")) {
+                iterator.remove(); // Suppression sécurisée
+            }
+        }
+        return people;
+    }
 
 
 }
