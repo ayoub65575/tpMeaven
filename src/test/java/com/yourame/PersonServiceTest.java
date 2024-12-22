@@ -4,7 +4,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,6 +71,24 @@ public class PersonServiceTest {
                 assertThat(people.get(3))
                                 .isEqualTo(Person.builder().firstName("Hamid").familyName("Jamila").build());
 
+        }
+
+
+         @Test
+        public void testRemoveBobWithoutIterator() {
+                assertThatThrownBy(() -> PersonService.removeBobWithoutIterator())
+                                .isInstanceOf(ConcurrentModificationException.class);
+        }
+
+        @Test
+        public void testRemoveBobUsingIterator() {
+                Set<Person> people = new HashSet<>();
+                people.add(Person.builder().firstName("Alice").familyName("Johnson").build());
+                people.add(Person.builder().firstName("Charlie").familyName("Davis").build());
+
+                Set<Person> peopleWithoutBob = PersonService.removeBobUsingIterator();
+
+                assertThat(peopleWithoutBob).containsExactlyInAnyOrderElementsOf(people);
         }
 
 }
